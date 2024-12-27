@@ -46,7 +46,6 @@ dynamixel parse_packet(uint8_t *rx_buffer, uint8_t size_buffer)
         result.parameters[i] = rx_buffer[i+5];
     }
 
-    uint8_t crc_sum = calculate_checksum(rx_buffer[2]+1, rx_buffer[3],rx_buffer[4], result.parameters) ;
     result.checksum = rx_buffer[size_buffer-1];
 
     return result;
