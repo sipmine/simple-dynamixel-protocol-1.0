@@ -1,19 +1,36 @@
 # Путь к ARM GCC Toolchain
-CC = arm-none-eabi-gcc
-AR = arm-none-eabi-ar
+PLATFORM ?= stm
+
+MCPU = cortex-m4
+
+MFPU = fpv4-sp-d16
+
+BOARD = STM32F401xE
+
 INCLUDES = -I.
-CFLAGS = -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard \
-         -Wall -Os -ffunction-sections -fdata-sections -nostdlib \
-         -DSTM32F401xE  $(INCLUDES)
 
-# Исходные файлы
-SRC = dynamixel.c# Добавьте сюда ваши файлы
+# source files
+SRC = dynamixel.c
 
-# Выходная библиотека
+# library name
 LIB = libdynamixel.a
 
-# Компиляция объектных файлов
+# object files
 OBJS = $(SRC:.c=.o)
+
+
+ifeq ($(PLATFORM), stm)
+    CC = arm-none-eabi-gcc
+    AR = arm-none-eabi-ar
+    CFLAGS = -mcpu=$(MCPU) -mthumb -mfpu=$(MFPU) -mfloat-abi=hard \
+             -Wall -Os -ffunction-sections -fdata-sections -nostdlib \
+             -D$(BOARD) -I.
+else ifeq ($(PLATFORM), unix)
+    CC = gcc
+    AR = ar
+    CFLAGS = -Wall -Os -ffunction-sections -fdata-sections -nostdlib -I.
+endif
+
 
 all: $(LIB)
 
